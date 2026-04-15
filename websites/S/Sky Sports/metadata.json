@@ -5,6 +5,12 @@
     "id": "212701689579438080",
     "name": "bnwkr"
   },
+  "contributors": [
+    {
+      "name": "Max",
+      "id": "863297546813571082"
+    }
+  ],
   "service": "Sky Sports",
   "description": {
     "en": "Sky Sports offers extensive live sports coverage, news, and analysis for fans in the United Kingdom and Ireland."
@@ -14,7 +20,7 @@
     "www.skysports.com"
   ],
   "regExp": "^https?[:][/][/](www[.])?skysports[.]com[/]",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "logo": "https://cdn.rcd.gg/PreMiD/websites/S/Sky%20Sports/assets/logo.png",
   "thumbnail": "https://cdn.rcd.gg/PreMiD/websites/S/Sky%20Sports/assets/thumbnail.jpg",
   "color": "#000000",
@@ -31,6 +37,18 @@
       "title": "Privacy Mode",
       "icon": "fad fa-user-secret",
       "value": false
+    },
+    {
+      "id": "usePresenceName",
+      "title": "Show Title as Presence",
+      "icon": "fad fa-user-edit",
+      "value": true
+    },
+    {
+      "id": "useCoverImage",
+      "title": "Show Cover",
+      "icon": "fad fa-images",
+      "value": true
     },
     {
       "id": "showButtons",

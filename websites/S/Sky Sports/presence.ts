@@ -12,10 +12,12 @@ enum ActivityAssets {
 presence.on('UpdateData', async () => {
   const presenceData: PresenceData = {
     largeImageKey: ActivityAssets.Logo,
-    type: ActivityType.Playing,
+    type: ActivityType.Watching,
   }
   const setting = {
     showButtons: await presence.getSetting<boolean>('showButtons'),
+    usePresenceName: await presence.getSetting<boolean>('usePresenceName'),
+    useCoverImage: await presence.getSetting<boolean>('useCoverImage'),
     privacy: await presence.getSetting<boolean>('privacy'),
   }
   const urlpath = document.location.pathname.split('/')
@@ -57,16 +59,23 @@ presence.on('UpdateData', async () => {
       urlpath[1] === 'watch'
       || urlpath[2] === 'watch'
     ) {
-      presenceData.details = setting.privacy
-        ? 'Viewing live channel'
-        : 'Viewing live:'
       if (!setting.privacy) {
-        const liveTitle = document.querySelector<HTMLMetaElement>(
-          '[class="watch-channel__title-text"]',
-        )
-        presenceData.state = liveTitle?.textContent ?? 'TV Guide'
+        const liveTitle = document.querySelector<HTMLMetaElement>('[class="watch-channel__title-text"]')
+        const liveDescription = document.querySelector<HTMLMetaElement>('[class="watch-channel__programme-description"]')
+        const liveImage = document.querySelector<HTMLImageElement>('[class="ui-live-player__poster-wrapper"] img')?.src
+        if (setting.usePresenceName) {
+          presenceData.name = liveTitle?.textContent ?? 'Live Channel'
+        }
+        if (setting.useCoverImage && liveTitle) {
+          presenceData.largeImageKey = liveImage
+        }
+        presenceData.details = liveTitle?.textContent ?? 'Live Channel'
+        presenceData.state = liveDescription?.textContent.trim() ?? 'TV Guide'
         presenceData.smallImageKey = Assets.Live
         presenceData.smallImageText = 'Watching live'
+      }
+      else {
+        presenceData.details = 'Viewing live channel'
       }
 
       if (setting.showButtons && !setting.privacy) {
@@ -100,7 +109,7 @@ presence.on('UpdateData', async () => {
         if (!setting.privacy) {
           presenceData.state = document.querySelector<HTMLMetaElement>(
             '[class="swap-text__target"]',
-          )
+          )?.textContent
         }
       }
       if (urlpath[2] === 'teams') {
@@ -110,7 +119,7 @@ presence.on('UpdateData', async () => {
         if (!setting.privacy) {
           presenceData.state = document.querySelector<HTMLMetaElement>(
             '[class="swap-text__target"]',
-          )
+          )?.textContent
         }
       }
     }
@@ -126,6 +135,7 @@ presence.on('UpdateData', async () => {
     }
     if (urlpath[1] === 'football') {
       // Football
+      presenceData.details = 'Reading football news'
       if (urlpath[2] === 'tables') {
         presenceData.details = 'Viewing football tables'
       }
@@ -141,8 +151,7 @@ presence.on('UpdateData', async () => {
     }
     else if (
       // categories
-      urlpath[1] === 'football'
-      || urlpath[1] === 'cricket'
+      urlpath[1] === 'cricket'
       || urlpath[1] === 'golf'
       || urlpath[1] === 'tennis'
       || urlpath[1] === 'boxing'
@@ -153,6 +162,7 @@ presence.on('UpdateData', async () => {
       || urlpath[1] === 'nfl'
       || urlpath[1] === 'netball'
       || urlpath[1] === 'mma'
+      || urlpath[1] === 'nba'
     ) {
       presenceData.details = setting.privacy ? 'Reading news' : 'Reading news:'
       if (!setting.privacy) {
